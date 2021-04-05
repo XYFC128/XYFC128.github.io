@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>Google Sheets + GAppsScript = Database</title>
+    <link href="/2021/04/05/Google-Sheets-GAppsScript-Database/"/>
+    <url>/2021/04/05/Google-Sheets-GAppsScript-Database/</url>
+    
+    <content type="html"><![CDATA[<p>GAppsScript is a scripting platform for light-weight application development in the Google Workspace platform. Because it is free and runs on Google platform, it is a great choice for those who want to setup a simple database without money. To achieve this, we need to attach a new script to our Google Sheet.Click “Tools -&gt; Script Editor” on the top tool bar. Then creat a function to handle post requests:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doPost</span>(<span class="hljs-params">e</span>)  </span>&#123;<br>    <span class="hljs-comment">//Do something</span><br>&#125;<br></code></pre></td></tr></table></figure><br>We can get our sheet by this:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> SpreadSheet = SpreadsheetApp.openById(<span class="hljs-string">&quot;&lt;Sheet ID&gt;&quot;</span>);<br><span class="hljs-keyword">let</span> Sheet = SpreadSheet.getSheets()[<span class="hljs-number">0</span>];<span class="hljs-comment">//Get first sheet</span><br></code></pre></td></tr></table></figure><br>The Sheet ID can be found in sheet’s url:<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">https:<span class="hljs-regexp">//</span>docs.google.com<span class="hljs-regexp">/spreadsheets/</span>d<span class="hljs-regexp">/&lt;Sheet ID&gt;/</span>edit<span class="hljs-comment">#gid=0</span><br></code></pre></td></tr></table></figure><br>There are some useful APIs to interact with the sheet:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">Sheet.getLastRow();<span class="hljs-comment">//Get the index of the last row having value</span><br>Sheet.getRange(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>).setValue(<span class="hljs-string">&quot;123&quot;</span>);<span class="hljs-comment">//set the value of (row, column)</span><br></code></pre></td></tr></table></figure><br>To be more specific, here is an example:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doPost</span>(<span class="hljs-params">e</span>) </span>&#123;<br>  <span class="hljs-comment">// Get data</span><br>  <span class="hljs-keyword">let</span> params = e.parameter; <br>  <span class="hljs-keyword">let</span> name = params.name;<br>  <span class="hljs-keyword">let</span> mail = params.mail;<br> <br>  <span class="hljs-keyword">let</span> SpreadSheet = SpreadsheetApp.openById(<span class="hljs-string">&quot;ID&quot;</span>);<br>  <span class="hljs-keyword">let</span> Sheet = SpreadSheet.getSheets()[<span class="hljs-number">0</span>]; <br>  <span class="hljs-keyword">let</span> LastRow = Sheet.getLastRow();<br><br>  <span class="hljs-comment">// Write data</span><br>  Sheet.getRange(LastRow+<span class="hljs-number">1</span>, <span class="hljs-number">1</span>).setValue(name);<br>  Sheet.getRange(LastRow+<span class="hljs-number">1</span>, <span class="hljs-number">2</span>).setValue(mail);<br>  <br>  <span class="hljs-comment">// Return</span><br>  <span class="hljs-keyword">return</span> ContentService<br>  .createTextOutput(<span class="hljs-built_in">JSON</span>.stringify(&#123; <span class="hljs-attr">result</span>: <span class="hljs-string">&#x27;Success&#x27;</span>, <span class="hljs-attr">version</span>: <span class="hljs-string">&#x27;1.0&#x27;</span> &#125;))<br>      .setMimeType(ContentService.MimeType.JSON); <br>&#125;<br></code></pre></td></tr></table></figure><br>After editing done, click “Deploy-&gt;New Deployment.”<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs vim">Deploy <span class="hljs-built_in">type</span>: WebApp<br>Configuration:<br>    Execute <span class="hljs-keyword">a</span><span class="hljs-variable">s:</span> Me<br>    Who <span class="hljs-built_in">has</span> acces<span class="hljs-variable">s:</span> Anyone<br></code></pre></td></tr></table></figure><br>And you can send a post request to the given link to test it.</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Useful</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Web</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Fix Manjaro Headset Microphone Not Working</title>
+    <link href="/2021/04/04/Fix-Manjaro-Headset-Microphone-Not-Working/"/>
+    <url>/2021/04/04/Fix-Manjaro-Headset-Microphone-Not-Working/</url>
+    
+    <content type="html"><![CDATA[<p>When I plug my headphone into my Manjaro machine, although it can play sounds, it doesn’t show up in the microphone devices menu.<br>To fix this, I create and edit the following file:<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/etc/m</span>odprobe.d/alsa-base.conf<br></code></pre></td></tr></table></figure><br>Add this line to the end of the file:<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">options</span> snd-hda-intel model=<span class="hljs-keyword">dell</span>-headset-multi<br></code></pre></td></tr></table></figure><br>After reboot, my headphone can be selected in the microphone devices menu.<br><img src="https://i.imgur.com/PWi62Dw.png" alt="img" title="Audio Settings"><br>This method also works on other linux distros such as Ubuntu.</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Useful</category>
+      
+      <category>Note</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Linux</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo blog setup note</title>
+    <link href="/2021/04/04/Hexo-blog-setup-note/"/>
+    <url>/2021/04/04/Hexo-blog-setup-note/</url>
+    
+    <content type="html"><![CDATA[<h2 id="Theme"><a href="#Theme" class="headerlink" title="Theme"></a>Theme</h2><p>Update theme:<br><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">npm <span class="hljs-keyword">update</span> <span class="hljs-comment">--save hexo-theme-fluid</span><br></code></pre></td></tr></table></figure><br>Theme configuration file:<br><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">_config</span>.</span></span>fluid.yml<br></code></pre></td></tr></table></figure></p><h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><p>New post:<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs haxe">hexo <span class="hljs-keyword">new</span> <span class="hljs-type">post</span> <span class="hljs-string">&quot;Title&quot;</span><br></code></pre></td></tr></table></figure><br>Post template:<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-meta">---</span><br><span class="hljs-attr">title:</span> <span class="hljs-string">Title</span><br><span class="hljs-attr">date:</span> <span class="hljs-number">2021-04-04 17:16:57</span><br><span class="hljs-attr">categories:</span><br><span class="hljs-bullet">-</span> <span class="hljs-string">A</span><br><span class="hljs-attr">tags:</span><br><span class="hljs-bullet">-</span> <span class="hljs-string">A</span><br><span class="hljs-meta">---</span><br></code></pre></td></tr></table></figure><br>Test server:<br><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs axapta">hexo <span class="hljs-keyword">server</span><br></code></pre></td></tr></table></figure></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Note</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Windows 10 theme for wine</title>
+    <link href="/2021/04/04/Windows-10-theme-for-wine/"/>
+    <url>/2021/04/04/Windows-10-theme-for-wine/</url>
+    
+    <content type="html"><![CDATA[<p>After searching on internet for while, I finally found the msstyle theme that makes wine applications look like Windows 10 apps.</p><h2 id="Screenshot"><a href="#Screenshot" class="headerlink" title="Screenshot:"></a>Screenshot:</h2><p><img src="https://i.imgur.com/PkFh7xK.png" alt="Imgur" title="IDA on wine with win10 theme"></p><p><a href="https://github.com/XYFC128/Resource/blob/master/Files/Windows10%20wine%20theme.zip?raw=true">Download Link</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Useful</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Windows</tag>
+      
+      <tag>Wine</tag>
+      
+      <tag>Theme</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
